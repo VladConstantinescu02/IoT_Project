@@ -4,6 +4,7 @@
     background-color: #eb5e92;
     display: flex;
     align-items: center;
+    border-radius: 10px;
 }
 
 .monitor-view-top-title{

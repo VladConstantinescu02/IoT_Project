@@ -24,7 +24,7 @@ const MonitorViewTop = () => {
             <div className="monitor-view-top-right">
                 <h2 className="system-temperature-display">42.56 <DeviceThermostatIcon style={{ marginBottom: '-5px' }}/></h2>
                 <div className="wifi-dropdown">
-                    <Button variant="contained" onClick={toggleDropdownOpen}>
+                    <Button variant="contained" onClick={toggleDropdownOpen} style = {{ backgroundColor: "#272c2b", color: "#eb5e92" }}>
                         Wifiname
                         <KeyboardArrowDownIcon />
                     </Button>
