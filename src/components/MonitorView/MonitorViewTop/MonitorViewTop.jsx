@@ -7,7 +7,7 @@ import { Button } from "@mui/material";
 import { useState } from "react";
 
 
-const MonitorViewTop = () => {
+const MonitorViewTop = ({monitoringDeviceActive}) => {
     
     const [dropdownOpen, setDropDownOpen] = useState(false);
 
@@ -19,7 +19,12 @@ const MonitorViewTop = () => {
         <div className="monitor-view-top">
             <div className="monitor-view-top-left">
                 <h2 className="monitor-view-top-title">Living room monitor</h2>
-                <div className="monitor-status">Online <WifiIcon style={{ marginBottom: '-5px' }} /></div>
+                <div className="monitor-status">
+                    {
+                        monitoringDeviceActive ? "Online" : "Offline"
+                    }
+                    <WifiIcon style={{ marginBottom: '-5px' }} />
+                </div>
             </div>
             <div className="monitor-view-top-right">
                 <h2 className="system-temperature-display">42.56 <DeviceThermostatIcon style={{ marginBottom: '-5px' }}/></h2>
