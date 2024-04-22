@@ -10,9 +10,14 @@ const MonitorView = () => {
     const [monitoringDeviceActive, setMonitoringDeviceActive] = useState(false);
 
     const [showMonitorStateAlert, setShowMonitorStateAlert] = useState(false);
+
+    const [systemData, setSystemData] = useState({  
+      systemTemperature: 0,
+      //wifiName:
+    });
     
     useEffect(() => {
-        let webSocket = new WebSocket("ws://192.168.87.139:8080");
+        let webSocket = new WebSocket("ws://192.168.11.139:8080");
 
         webSocket.addEventListener("open", () => {
             console.log("connected to server...");
@@ -40,6 +45,8 @@ const MonitorView = () => {
                         setShowMonitorStateAlert(true);
                         setMonitoringDeviceActive(false);
                     }
+                } else if(msg.MessageType === 5) {
+                  setSystemData({ ...systemData, systemTemperature: msg.Content.SystemTemperature });
                 }
             }
     )
@@ -51,7 +58,7 @@ const MonitorView = () => {
             UserID: "124",
             ApiKey: "sdfsdfbsjdhbf"
           }
-          const response = await axios.post("http://localhost:8080/check/device", body, {
+          const response = await axios.post("http://192.168.11.139:8080/check/device", body, {
             headers: {
               "Content-Type": "application/json"
             }
@@ -76,7 +83,9 @@ const MonitorView = () => {
                 />
             }
             <div style={{ padding: "1rem 1rem .5rem 1rem " }}>
-                <MonitorViewTop monitoringDeviceActive = {monitoringDeviceActive} />  
+                <MonitorViewTop
+                    systemData = {systemData}  
+                    monitoringDeviceActive = {monitoringDeviceActive} />  
             </div>
             <div style={{ width: "100%", height: "100%", padding: "1rem"}}>
                 <MonitorViewBottom />
