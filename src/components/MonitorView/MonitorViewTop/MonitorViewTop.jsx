@@ -6,7 +6,6 @@ import WifiIcon from '@mui/icons-material/Wifi';
 import { Button } from "@mui/material";
 import { useState } from "react";
 
-
 const MonitorViewTop = ({monitoringDeviceActive}) => {
     
     const [dropdownOpen, setDropDownOpen] = useState(false);
