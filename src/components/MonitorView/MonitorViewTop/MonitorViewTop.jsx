@@ -6,13 +6,14 @@ import WifiIcon from '@mui/icons-material/Wifi';
 import { Button } from "@mui/material";
 import { useState } from "react";
 
-const MonitorViewTop = ({monitoringDeviceActive}) => {
+const MonitorViewTop = ({monitoringDeviceActive, systemData}) => {
     
     const [dropdownOpen, setDropDownOpen] = useState(false);
 
     const toggleDropdownOpen = () => {
         setDropDownOpen(!dropdownOpen);
     }
+
     
     return(
         <div className="monitor-view-top">
@@ -26,7 +27,7 @@ const MonitorViewTop = ({monitoringDeviceActive}) => {
                 </div>
             </div>
             <div className="monitor-view-top-right">
-                <h2 className="system-temperature-display">42.56 <DeviceThermostatIcon style={{ marginBottom: '-5px' }}/></h2>
+                <h2 className="system-temperature-display">{systemData.systemTemperature} <DeviceThermostatIcon style={{ marginBottom: '-5px' }}/></h2>
                 <div className="wifi-dropdown">
                     <Button variant="contained" onClick={toggleDropdownOpen} style = {{ backgroundColor: "#272c2b", color: "#eb5e92" }}>
                         Wifiname
