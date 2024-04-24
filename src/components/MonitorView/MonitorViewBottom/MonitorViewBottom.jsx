@@ -31,7 +31,7 @@ const MonitorViewBottom = () => {
                     </Item>
                 </Grid>
                 <Grid item xs={12} sm={5}>
-                    <Item style ={{ height: isSmallScreen ? "20rem" : "59%", marginTop: ".5rem" }}>
+                    <Item style ={{ height: isSmallScreen ? "20rem" : "60%" }}>
 
                     </Item>
                     <Item style ={{ marginTop: "1rem", height: "39%" }}>
