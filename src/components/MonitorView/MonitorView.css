@@ -1,5 +1,5 @@
 .monitor-view{
     width: 100%;
-    height: 100%;
-    background: #272c2b;
+    height: 100vh;
+    background-color: #272c2b;
 }

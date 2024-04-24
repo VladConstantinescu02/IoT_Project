@@ -17,7 +17,7 @@ const MonitorView = () => {
     });
     
     useEffect(() => {
-        let webSocket = new WebSocket("ws://192.168.11.139:8080");
+        let webSocket = new WebSocket("ws://192.168.128.139:8080");
 
         webSocket.addEventListener("open", () => {
             console.log("connected to server...");
@@ -58,7 +58,7 @@ const MonitorView = () => {
             UserID: "124",
             ApiKey: "sdfsdfbsjdhbf"
           }
-          const response = await axios.post("http://192.168.11.139:8080/check/device", body, {
+          const response = await axios.post("http://192.168.128.139:8080/check/device", body, {
             headers: {
               "Content-Type": "application/json"
             }
@@ -87,7 +87,7 @@ const MonitorView = () => {
                     systemData = {systemData}  
                     monitoringDeviceActive = {monitoringDeviceActive} />  
             </div>
-            <div style={{ width: "100%", height: "100%", padding: "1rem"}}>
+            <div style={{ width: "100%", height: "87%", padding: "1rem"}}>
                 <MonitorViewBottom />
             </div>
         </div>

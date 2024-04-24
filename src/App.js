@@ -1,12 +1,16 @@
-import './App.css';
-import MonitorView from './components/MonitorView/MonitorView';
+import { useState, useEffect } from "react";
+import MonitorView from "./components/MonitorView/MonitorView";
+import "./App.css";
 
 function App() {
+
   return (
-    <div className="App">
-      <MonitorView />
-    </div>
-  );
+    <>
+          <div>
+              <MonitorView />
+          </div>
+    </>
+  )
 }
 
-export default App;
+export default App
