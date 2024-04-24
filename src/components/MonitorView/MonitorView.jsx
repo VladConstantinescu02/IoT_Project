@@ -4,6 +4,8 @@ import MonitorViewTop from "./MonitorViewTop/MonitorViewTop";
 import MonitorViewBottom from "./MonitorViewBottom/MonitorViewBottom"; 
 import axios from "axios";
 import Alert from "../Alerts/Alert";
+import NoStrollerIcon from '@mui/icons-material/NoStroller';
+import StrollerIcon from '@mui/icons-material/Stroller';
 
 const MonitorView = () => {
 
@@ -80,7 +82,14 @@ const MonitorView = () => {
                     Type={monitoringDeviceActive ? "success" : "error"}
                     msg={monitoringDeviceActive ? "Monitoring device back online" : "Monitoring device disconnected"}
                     setClose={setShowMonitorStateAlert}
-                />
+                    monitoringDeviceActive={monitoringDeviceActive}
+                >
+                  {
+                    monitoringDeviceActive ?
+                    <StrollerIcon  style={{fontSize: "3em"}}/> :
+                    <NoStrollerIcon  style={{fontSize: "3em"}}/>
+                  }
+                  </ Alert>
             }
             <div style={{ padding: "1rem 1rem .5rem 1rem " }}>
                 <MonitorViewTop
