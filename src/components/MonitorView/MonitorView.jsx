@@ -6,6 +6,7 @@ import axios from "axios";
 import Alert from "../Alerts/Alert";
 import NoStrollerIcon from '@mui/icons-material/NoStroller';
 import StrollerIcon from '@mui/icons-material/Stroller';
+import TemperatureData from "./MonitorViewBottom/TemperatureData/TemperatureData";
 
 const MonitorView = () => {
 
@@ -16,6 +17,12 @@ const MonitorView = () => {
     const [systemData, setSystemData] = useState({  
       systemTemperature: 0,
       //wifiName:
+    });
+
+    const [temperatureData, setTemperatureData] = useState({
+      temperatureC: 0,
+      temperatureF: 0,
+      humidity: 0
     });
     
     useEffect(() => {
@@ -49,6 +56,13 @@ const MonitorView = () => {
                     }
                 } else if(msg.MessageType === 5) {
                   setSystemData({ ...systemData, systemTemperature: msg.Content.SystemTemperature });
+                } else if(msg.MessageType ===4) {
+                  setTemperatureData({
+                    temperatureC: msg.Content.TemperatureC,
+                    temperatureF: msg.Content.TemperatureF,
+                    humidity: msg.Content.Humidity
+                  });
+                  console.log(temperatureData);
                 }
             }
     )
@@ -97,7 +111,9 @@ const MonitorView = () => {
                     monitoringDeviceActive = {monitoringDeviceActive} />  
             </div>
             <div style={{ width: "100%", height: "87%", padding: "1rem"}}>
-                <MonitorViewBottom />
+                <MonitorViewBottom
+                  temperatureData = {temperatureData}
+                />
             </div>
         </div>
     );

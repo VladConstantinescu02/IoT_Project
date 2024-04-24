@@ -6,17 +6,17 @@ import { Height } from "@mui/icons-material";
 import Player from "../Player/Player";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from "@mui/material/styles";
+import TemperatureData from "./TemperatureData/TemperatureData";
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
     ...theme.typography.body2,
     padding: theme.spacing(1),
-    textAlign: 'center',
     borderRadius: "10px",
     color: theme.palette.text.secondary,
   }));
 
-const MonitorViewBottom = () => {   
+const MonitorViewBottom = ({ temperatureData }) => {   
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -34,8 +34,10 @@ const MonitorViewBottom = () => {
                     <Item style ={{ height: isSmallScreen ? "20rem" : "60%" }}>
 
                     </Item>
-                    <Item style ={{ marginTop: "1rem", height: "39%" }}>
-
+                    <Item style ={{ marginTop: "1rem", height: "39%", backgroundColor: "transparent", boxShadow: "none" }}>
+                        <TemperatureData 
+                            temperatureData={temperatureData}
+                        />
                     </Item>
                 </Grid>
             </Grid>
