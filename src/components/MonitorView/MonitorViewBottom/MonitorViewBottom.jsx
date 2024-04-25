@@ -3,10 +3,10 @@ import Grid from "@mui/material/Unstable_Grid2/Grid2";
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import { Height } from "@mui/icons-material";
-import Player from "../Player/Player";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from "@mui/material/styles";
 import TemperatureData from "./TemperatureData/TemperatureData";
+import LivestreamPlayer from "./LivestreamPlayer/LivestreamPlayer";
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -16,7 +16,7 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
   }));
 
-const MonitorViewBottom = ({ temperatureData }) => {   
+const MonitorViewBottom = ({ temperatureData, emotions, boundingBox, playerRef, boundingBoxRef, monitoringDeviceActive, livestreamStreaming }) => {   
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -25,7 +25,13 @@ const MonitorViewBottom = ({ temperatureData }) => {
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} style={{ height: "100%" }}>
                 <Grid item xs={12} sm={7}>
                     <Item style ={{ height: isSmallScreen ? "60vh" : "70%" }} >
-                        <Player />
+                        <LivestreamPlayer
+                            boundingBox={boundingBox}
+                            playerRef={playerRef}
+                            boundingBoxRef={boundingBoxRef}
+                            monitoringDeviceActive={monitoringDeviceActive}
+                            livestreamStreaming={livestreamStreaming}
+                         />
                     </Item>
                     <Item style ={{ marginTop: "1rem", height: isSmallScreen ? "22vh" : "29%" }}>
                     </Item>
