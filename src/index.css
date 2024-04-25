@@ -8,6 +8,12 @@ body {
   background-color: #272c2b;
 }
 
+@media only screen and (max-width: 600px) {
+  body {
+    font-size: 70%;
+  }
+}
+
 *{
   box-sizing: border-box;
 }
