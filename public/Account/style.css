@@ -54,7 +54,9 @@ body {
     font-weight: 700;
     transition: all .1s;
     color: #272c2b;
-    vertical-align: middle;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .submit-btn:hover {
     transform: scale(1.1);
