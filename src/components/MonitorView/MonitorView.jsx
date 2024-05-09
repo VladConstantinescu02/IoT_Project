@@ -7,6 +7,11 @@ import Alert from "../Alerts/Alert";
 import NoStrollerIcon from '@mui/icons-material/NoStroller';
 import StrollerIcon from '@mui/icons-material/Stroller';
 import TemperatureData from "./MonitorViewBottom/TemperatureData/TemperatureData";
+import videojs, { VideoJsPlayer } from "video.js";
+import {
+    registerIVSQualityPlugin,
+    VideoJSQualityPlugin,
+} from "amazon-ivs-player";
 
 const initialBoundingBoxState = {
   Left: 0,
@@ -152,6 +157,44 @@ const MonitorView = () => {
             console.log("Error:", error);
         }
     }
+
+    const rtmpURL =
+        "https://0679413b8dc3.us-east-1.playback.live-video.net/api/video/v1/us-east-1.637423178803.channel.AY8bo8hMFPfv.m3u8";
+
+    useEffect(() => {
+        const mediaPlayerScript = document.createElement("script");
+
+        mediaPlayerScript.src =
+            "https://player.live-video.net/1.3.1/amazon-ivs-videojs-tech.min.js";
+        mediaPlayerScript.async = false;
+        mediaPlayerScript.onload = () => {
+            mediaPlayerScriptLoaded();
+        };
+
+        document.body.appendChild(mediaPlayerScript);
+    }, []);
+
+    const mediaPlayerScriptLoaded = () => {
+        const registerIVSTech = window.registerIVSTech;
+        registerIVSTech(videojs);
+        registerIVSQualityPlugin(videojs);
+
+        var player = videojs(
+            "aws-live",
+            {
+                techOrder: ["AmazonIVS"],
+            },
+            () => {
+                console.log("Player is ready to use!");
+
+                const videoContainerEl = document.querySelector("#aws-live");
+
+                player.enableIVSQualityPlugin();
+                player.volume(0.5);
+                player.src(rtmpURL);
+            }
+        )
+    };
     
     return (    
         <div className="monitor-view">
@@ -175,7 +218,7 @@ const MonitorView = () => {
                     systemData = {systemData}  
                     monitoringDeviceActive = {monitoringDeviceActive} />  
             </div>
-            <div style={{ width: "100%", height: "87%", padding: "1rem"}}>
+            <div style={{ width: "100%", height: "88%", padding: "1rem"}}>
                 <MonitorViewBottom
                   temperatureData={temperatureData}
                   emotions={emotions}
