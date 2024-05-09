@@ -31,7 +31,7 @@
                   </span>
                   <span style="border-color: #eb5e92" class="mdc-notched-outline__trailing"></span>
                 </span>
-                <input style="color: #eb5e92; background-color: #272c2b;" type="text" class="mdc-text-field__input" aria-labelledby="my-label-id">
+                <input id="Name" style="color: #eb5e92; background-color: #272c2b;" type="text" class="mdc-text-field__input">
               </label>
         </div>
 
@@ -44,7 +44,7 @@
                   </span>
                   <span style="border-color: #eb5e92" class="mdc-notched-outline__trailing"></span>
                 </span>
-                <input style="color: #eb5e92; background-color: #272c2b;" type="text" class="mdc-text-field__input" aria-labelledby="my-label-id">
+                <input id="Username" style="color: #eb5e92; background-color: #272c2b;" type="text" class="mdc-text-field__input">
               </label>
         </div>
 
@@ -57,7 +57,7 @@
                   </span>
                   <span style="border-color: #eb5e92" class="mdc-notched-outline__trailing"></span>
                 </span>
-                <input style="color: #eb5e92; background-color: #272c2b;" type="email" class="mdc-text-field__input" aria-labelledby="my-label-id">
+                <input id="Email" style="color: #eb5e92; background-color: #272c2b;" type="email" class="mdc-text-field__input">
               </label>
         </div>
 
@@ -70,7 +70,7 @@
                   </span>
                   <span style="border-color: #eb5e92" class="mdc-notched-outline__trailing"></span>
                 </span>
-                <input style="color: #eb5e92; background-color: #272c2b;" type="password" class="mdc-text-field__input" aria-labelledby="my-label-id">
+                <input id="Password" style="color: #eb5e92; background-color: #272c2b;" type="password" class="mdc-text-field__input">
               </label>
         </div>
 
@@ -83,23 +83,88 @@
                   </span>
                   <span style="border-color: #eb5e92" class="mdc-notched-outline__trailing"></span>
                 </span>
-                <input style="color: #eb5e92; background-color: #272c2b;" type="password" class="mdc-text-field__input" aria-labelledby="my-label-id">
+                <input id="ConfirmPassword" style="color: #eb5e92; background-color: #272c2b;" type="password" class="mdc-text-field__input">
               </label>
         </div>
 
         <div>
-            <button class="submit-btn">
+            <button id="Submit" class="submit-btn">
                 Create &nbsp;<span class="material-symbols-outlined">add_circle</span>
             </button>
         </div>
     </div>
 
+    <div class="alert-container">
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/material-components-web/11.0.0/material-components-web.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
+        const ALERT_SUCCESS = "alert-success";
+        const ALERT_ERROR = "alert-error";
+        const ALERT_ANIMATION_TIMEOUT = 3000;
+        const ALERT_REMOVE_TIMEOUT = 500;
+
         // Initialize text fields
         const textFields = document.querySelectorAll('.mdc-text-field');
         textFields.forEach((textField) => {
             new mdc.textField.MDCTextField(textField);
+        });
+
+        const alertContainer = document.querySelector(".alert-container");
+
+        const getAlert = (type, msg) => {
+          return `
+          <div class="alert swing-in-top-fwd ${type}">
+            ${msg}
+          </div>
+          `
+        }
+
+        const showAlert = (html) => {
+          let alert = document.createElement("div");
+          alert.innerHTML = html;
+          alertContainer.appendChild(alert);
+
+          setTimeout(() => {
+            alert.classList.add("swing-out-top-bck");
+          }, ALERT_ANIMATION_TIMEOUT);
+
+          setTimeout(() => {
+            alertContainer.removeChild(alert);
+          }, ALERT_ANIMATION_TIMEOUT + ALERT_REMOVE_TIMEOUT);
+        }
+
+        document.getElementById("Submit").addEventListener("click", async () => {
+          const nameElement = document.getElementById("Name");
+          const usernameElement = document.getElementById("Username");
+          const emailElement = document.getElementById("Email");
+          const passwordElement = document.getElementById("Password");
+          const confirmPasswordElement = document.getElementById("ConfirmPassword");
+
+          const name = nameElement.value;
+          const username = usernameElement.value;
+          const email = emailElement.value;
+          const password = passwordElement.value;
+          const confirmPassword = confirmPasswordElement.value;
+                    
+          if (password === confirmPassword) {
+            const res = await axios.post("http://localhost:5085/api/users/create", 
+            {
+              Name: name,
+              Username: username,
+              Email: email,
+              Password: password
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+              }
+            })
+            console.log(res);
+          } else {
+            showAlert(getAlert(ALERT_ERROR, "Passwords do not match"));
+          }
         });
     </script>
 </body>

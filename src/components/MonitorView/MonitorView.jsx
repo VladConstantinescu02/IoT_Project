@@ -36,8 +36,6 @@ const MonitorView = () => {
 
     const [livestreamStreaming, setLivestreamStreaming] = useState(JSON.parse(localStorage.getItem("livestreamStreaming")) || false);
 
-    const [showMonitorViewStateAlert, setShowMonitorViewStateAlert] = useState(false);
-
     const playerRef = useRef(null);
     const boundingBoxRef = useRef(null);
 
@@ -46,7 +44,7 @@ const MonitorView = () => {
     
     useEffect(() => {
       if (!localStorage.getItem("livestreamStreaming")) localStorage.setItem("livestreamStreaming", "false");
-        let webSocket = new WebSocket("ws://192.168.128.139:8080");
+        let webSocket = new WebSocket("ws://localhost:8080");
 
         webSocket.addEventListener("open", () => {
             console.log("connected to server...");
@@ -55,13 +53,13 @@ const MonitorView = () => {
                 ClientType: 1,
                 MessageType: 1,
                 Content: {
-                  ApiKey: "sdfsdfbsjdhbf",
-                  UserID: "124",
-                  MonitoringDevicesIDs: ["123"]
+                    Email: "a@gmail.com",
+                    Password: "12345678",
+                    UserID: "3604F6D9-48B7-4C16-8347-E0A3BCBD99C1",
                 }
             }
             webSocket.send(JSON.stringify(message));
-            makeRequest();
+            makeConnectionRequest();
         });
         webSocket.addEventListener("message", (e) => {
             let msg = JSON.parse(e.data);
@@ -130,25 +128,30 @@ const MonitorView = () => {
     )
     },[]);
 
-    const makeRequest = async () => {
+    const makeConnectionRequest = async () => {
         try {
-          const body = {
-            UserID: "124",
-            ApiKey: "sdfsdfbsjdhbf"
-          }
-          const response = await axios.post("http://192.168.128.139:8080/check/device", body, {
-            headers: {
-              "Content-Type": "application/json"
+            const body = {
+                ApiKey: "kdjcnksdjnc",
+                UserID: "3604F6D9-48B7-4C16-8347-E0A3BCBD99C1",
             }
-          });
-          if (response.data === "active") {
-            setMonitoringDeviceActive(true);
-          }
-          console.log("Response:", response.data);
+            const response = await axios.post("http://localhost:8080/check/device", body, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+            if (response.data === "active") {
+                if (!monitoringDeviceActive)
+                    setMonitoringDeviceActive(true);
+            } else {
+                if (monitoringDeviceActive)
+                    setMonitoringDeviceActive(false);
+                setBoundingBox(initialBoundingBoxState);
+            }
+            console.log("Response:", response.data);
         } catch (error) {
-          console.log("Error:", error);
+            console.log("Error:", error);
         }
-      }
+    }
     
     return (    
         <div className="monitor-view">

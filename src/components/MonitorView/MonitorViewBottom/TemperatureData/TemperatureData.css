@@ -11,10 +11,10 @@
     color: #eb5e92;
     justify-content: center;
     align-items: center;
-    font-size: 2.5vw;
+    font-size: 2vw;
 }
 
 .temperature_data_middle {
-    border-left: solid 5px #eb5e92;
-    border-right: solid 5px #eb5e92;
+    border-left: solid 2px #eb5e92;
+    border-right: solid 2px #eb5e92;
 }

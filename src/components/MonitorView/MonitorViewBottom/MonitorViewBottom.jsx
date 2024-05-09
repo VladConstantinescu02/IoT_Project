@@ -9,7 +9,6 @@ import TemperatureData from "./TemperatureData/TemperatureData";
 import LivestreamPlayer from "./LivestreamPlayer/LivestreamPlayer";
 
 const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
     ...theme.typography.body2,
     padding: theme.spacing(1),
     borderRadius: "10px",
@@ -24,7 +23,7 @@ const MonitorViewBottom = ({ temperatureData, emotions, boundingBox, playerRef, 
         <div className="monitor-view-bottom">
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} style={{ height: "100%" }}>
                 <Grid item xs={12} sm={7}>
-                    <Item style ={{ height: isSmallScreen ? "60vh" : "70%" }} >
+                    <Item style={{ height: isSmallScreen ? "60vh" : "70%", backgroundColor: "transparent", boxShadow: "none" }} >
                         <LivestreamPlayer
                             boundingBox={boundingBox}
                             playerRef={playerRef}
@@ -33,11 +32,11 @@ const MonitorViewBottom = ({ temperatureData, emotions, boundingBox, playerRef, 
                             livestreamStreaming={livestreamStreaming}
                          />
                     </Item>
-                    <Item style ={{ marginTop: "1rem", height: isSmallScreen ? "22vh" : "29%" }}>
+                    <Item style={{ marginTop: "1rem", height: isSmallScreen ? "22vh" : "29%", backgroundColor: "transparent", boxShadow: "none" }}>
                     </Item>
                 </Grid>
                 <Grid item xs={12} sm={5}>
-                    <Item style ={{ height: isSmallScreen ? "20rem" : "60%" }}>
+                    <Item style={{ height: isSmallScreen ? "20rem" : "60%", backgroundColor: "transparent", boxShadow: "none" }}>
 
                     </Item>
                     <Item style ={{ marginTop: "1rem", height: "39%", backgroundColor: "transparent", boxShadow: "none" }}>

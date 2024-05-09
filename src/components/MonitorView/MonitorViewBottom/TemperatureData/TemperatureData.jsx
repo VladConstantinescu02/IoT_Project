@@ -19,7 +19,7 @@ const TemperatureData = ( {temperatureData} ) => {
            </div>
            <div className="temperature_data_left temperature-data-section">
                 {
-                    temperatureData.humidity
+                    temperatureData.humidity.toFixed(2)
                 }
                 %
            </div>
