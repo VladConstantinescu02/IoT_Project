@@ -97,41 +97,42 @@ const MonitorView = () => {
                   });
                   console.log(temperatureData);
                 } else if (msg?.MessageType === 7) {
-                  if (msg.Content?.Emotions) {
-                    setEmotions(msg.Content.Emotions);
-                  }
-
-                  if (msg.Content?.BoundingBox) {
-                    let left = msg.Content?.BoundingBox[0];
-                    let top = msg.Content?.BoundingBox[1];
-                    let width = msg.Content?.BoundingBox[2];
-                    let height = msg.Content?.BoundingBox[3];
-                    console.log("da");
-
-                    let playerWidth = playerRef.current.clientWidth;
-                    let playerHeight = playerRef.current.clientHeight;
-
-                    console.log(playerRef);
-                    console.log(playerWidth, playerHeight);
-
-                    console.log(playerWidth * left, playerHeight * top, playerWidth * width, playerHeight * height);
-
-                    boundingBoxRef.current.style.left = `${playerWidth * left * 1.0}px`;
-                    boundingBoxRef.current.style.top = `${playerHeight * top * 1.0}px`;
-                    boundingBoxRef.current.style.width = `${playerWidth * width * 1.0}px`;
-                    boundingBoxRef.current.style.height = `${playerHeight * height * 1.0}px`;
-
-                    setBoundingBox({
-                      Left: left,
-                      Top: top,
-                      Width: width,
-                      Height: height
-                    })
+                  if (playerRef && playerRef.current) {
+                    if (msg.Content?.Emotions) {
+                      setEmotions(msg.Content.Emotions);
+                      if (msg.Content?.BoundingBox) {
+                        let left = msg.Content?.BoundingBox[0];
+                        let top = msg.Content?.BoundingBox[1];
+                        let width = msg.Content?.BoundingBox[2];
+                        let height = msg.Content?.BoundingBox[3];
+                        console.log("da");
+    
+                        let playerWidth = playerRef.current.clientWidth;
+                        let playerHeight = playerRef.current.clientHeight;
+    
+                        console.log(playerRef);
+                        console.log(playerWidth, playerHeight);
+    
+                        console.log(playerWidth * left, playerHeight * top, playerWidth * width, playerHeight * height);
+    
+                        boundingBoxRef.current.style.left = `${playerWidth * left * 1.0}px`;
+                        boundingBoxRef.current.style.top = `${playerHeight * top * 1.0}px`;
+                        boundingBoxRef.current.style.width = `${playerWidth * width * 1.0}px`;
+                        boundingBoxRef.current.style.height = `${playerHeight * height * 1.0}px`;
+    
+                        setBoundingBox({
+                          Left: left,
+                          Top: top,
+                          Width: width,
+                          Height: height
+                        })
+                      }
+                    }
                   }
                 }
             }
-    )
-    },[]);
+        )
+    }, []);
 
     const makeConnectionRequest = async () => {
         try {

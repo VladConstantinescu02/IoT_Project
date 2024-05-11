@@ -3,17 +3,22 @@ import CloseIcon from '@mui/icons-material/Close';
 
 
 const Alert = ({ Type, msg, setClose, children}) => {
+    let typeToColor = {
+        "success": "#269f67",
+        "error": "#c8224d",
+        "info": "#fcc93b"
+    }
     return (
     <div className="alert-container">
-        <div className="alert" style={{ backgroundColor: Type === "success" ? "#269f67" : "#c8224d" }}>
+        <div className="alert" style={{ backgroundColor: typeToColor[Type] || "black" }}>
             <div className="close-icon" onClick={ () => setClose(false) }>
-                <CloseIcon />
+                <CloseIcon sx={{ color: "#272c2b" }} />
             </div>
             <h2>
                 {msg}
             </h2>
             {
-                    children
+                children
             }
         </div>
     </div>

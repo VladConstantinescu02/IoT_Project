@@ -23,6 +23,7 @@ import ChildCareIcon from '@mui/icons-material/ChildCare';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import LogoutIcon from '@mui/icons-material/Logout';
 import HistoryIcon from '@mui/icons-material/History';
+import { Link } from 'react-router-dom';
 
 const drawerWidth = 240;
 
@@ -76,7 +77,7 @@ const NavigationDrawer = () => {
                         edge="start"
                         sx={{ mr: 2, ...(open && { display: 'none' }), marginTop: ".5rem" }}
                     >
-                        <div style={{ backgroundColor: "#eb5e92", borderRadius: "10px"  }}>
+                        <div style={{ backgroundColor: "#eb5e92", borderRadius: "5px"  }}>
                             <MenuIcon style={{ fontSize: "2em", color: "#272c2b", marginTop: ".2rem" }} />
                         </div>
                     </IconButton>
@@ -116,14 +117,16 @@ const NavigationDrawer = () => {
                             <ListItemText primary="Your Account" />
                         </ListItemButton>
                     </ListItem>
+                    <Link style={{ textDecoration: "none", color: "#272c2b" }} to="/monitors/">
                     <ListItem disablePadding>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                <DevicesIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Your Devices" />
-                        </ListItemButton>
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <DevicesIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Your Devices" />
+                            </ListItemButton>
                     </ListItem>
+                    </Link>
                     <ListItem disablePadding>
                         <ListItemButton>
                             <ListItemIcon>
