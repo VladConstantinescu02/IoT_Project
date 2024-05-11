@@ -37,7 +37,11 @@ const MonitorViewBottom = ({ temperatureData, emotions, boundingBox, playerRef, 
                 </Grid>
                 <Grid item xs={12} sm={5}>
                     <Item style={{ height: isSmallScreen ? "20rem" : "80%", backgroundColor: "transparent", boxShadow: "none" }}>
-
+                        <h2 style={{ color: "white" }}>
+                        {
+                            emotions[0]
+                        }
+                        </h2>
                     </Item>
                     <Item style ={{ marginTop: "1rem", height: "39%", backgroundColor: "transparent", boxShadow: "none" }}>
                         <TemperatureData 
