@@ -12,6 +12,8 @@ import {
     registerIVSQualityPlugin,
     VideoJSQualityPlugin,
 } from "amazon-ivs-player";
+import { useParams } from "react-router-dom";
+import api from "../../utils/api";
 
 const initialBoundingBoxState = {
   Left: 0,
@@ -28,7 +30,7 @@ const MonitorView = () => {
 
     const [systemData, setSystemData] = useState({  
       systemTemperature: 0,
-      //wifiName:
+      wifiName: "no_wifi"
     });
 
     const [temperatureData, setTemperatureData] = useState({
@@ -45,6 +47,33 @@ const MonitorView = () => {
     const boundingBoxRef = useRef(null);
 
     const [emotions, setEmotions] = useState([]);
+
+    const [device, setDevice] = useState({});
+
+    const { id } = useParams();
+
+    const [loadingVideo, setLoadingVideo] = useState(true);
+    const [loadingDevice, setLoadingDevice] = useState(true);
+
+    const [socket, setSocket] = useState(null);
+
+    useEffect(() => {
+      const getDeviceData = async () => {
+        try {
+          const res = await api.get( `device/${id}`);
+          if (res.status === 200) {
+            setDevice(res.data);
+            console.log(device)
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      if (loadingDevice) {
+        getDeviceData();
+        setLoadingDevice(false);
+      }
+    }, [loadingDevice])
 
     
     useEffect(() => {
@@ -64,6 +93,7 @@ const MonitorView = () => {
                 }
             }
             webSocket.send(JSON.stringify(message));
+            setSocket(webSocket);
             makeConnectionRequest();
         });
         webSocket.addEventListener("message", (e) => {
@@ -76,10 +106,17 @@ const MonitorView = () => {
                     } else if (msg.Type === 1) {
                         setShowMonitorStateAlert(true);
                         setMonitoringDeviceActive(false);
+                        setEmotions([]);
+                        setSystemData({
+                            systemTemperature: 0,
+                            wifiName: "no_wifi"
+                        });
+
                     } else if (msg?.Type === 2 || msg?.Type === 3) {
                       console.log(msg);
                         if (msg?.Type === 2) {
-                          window.location.reload();
+                          //window.location.reload();
+                          setLoadingVideo(true);
                           setLivestreamStreaming(true);
                           localStorage.setItem("livestreamStreaming", "true");
                         } else if (msg?.Type === 3) {
@@ -88,12 +125,12 @@ const MonitorView = () => {
                         }
                     }
                 } else if(msg.MessageType === 5) {
-                  setSystemData({ ...systemData, systemTemperature: msg.Content.SystemTemperature });
+                  setSystemData({ ...systemData, systemTemperature: msg.Content.SystemTemperature, wifiName: msg.Content.WifiName });
                 } else if(msg.MessageType ===4) {
                   setTemperatureData({
-                    temperatureC: msg.Content.TemperatureC,
-                    temperatureF: msg.Content.TemperatureF,
-                    humidity: msg.Content.Humidity
+                    temperatureC: msg.Content?.TemperatureC,
+                    temperatureF: msg.Content?.TemperatureF,
+                    humidity: msg.Content?.Humidity
                   });
                   console.log(temperatureData);
                 } else if (msg?.MessageType === 7) {
@@ -158,46 +195,8 @@ const MonitorView = () => {
             console.log("Error:", error);
         }
     }
-
-    const rtmpURL =
-        "https://0679413b8dc3.us-east-1.playback.live-video.net/api/video/v1/us-east-1.637423178803.channel.AY8bo8hMFPfv.m3u8";
-
-    useEffect(() => {
-        const mediaPlayerScript = document.createElement("script");
-
-        mediaPlayerScript.src =
-            "https://player.live-video.net/1.3.1/amazon-ivs-videojs-tech.min.js";
-        mediaPlayerScript.async = false;
-        mediaPlayerScript.onload = () => {
-            mediaPlayerScriptLoaded();
-        };
-
-        document.body.appendChild(mediaPlayerScript);
-    }, []);
-
-    const mediaPlayerScriptLoaded = () => {
-        const registerIVSTech = window.registerIVSTech;
-        registerIVSTech(videojs);
-        registerIVSQualityPlugin(videojs);
-
-        var player = videojs(
-            "aws-live",
-            {
-                techOrder: ["AmazonIVS"],
-            },
-            () => {
-                console.log("Player is ready to use!");
-
-                const videoContainerEl = document.querySelector("#aws-live");
-
-                player.enableIVSQualityPlugin();
-                player.volume(0.5);
-                player.src(rtmpURL);
-            }
-        )
-    };
     
-    return (    
+    return device && (    
         <div className="monitor-view">
             {
                 showMonitorStateAlert && 
@@ -217,7 +216,11 @@ const MonitorView = () => {
             <div style={{ padding: "1rem 1rem .5rem 1rem " }}>
                 <MonitorViewTop
                     systemData = {systemData}  
-                    monitoringDeviceActive = {monitoringDeviceActive} />  
+                    monitoringDeviceActive = {monitoringDeviceActive} 
+                    deviceName={device.name}
+                    socket={socket}
+                    deviceId={device?.id}
+                />  
             </div>
             <div style={{ width: "100%", height: "88%", padding: "1rem"}}>
                 <MonitorViewBottom
@@ -228,6 +231,8 @@ const MonitorView = () => {
                   boundingBoxRef={boundingBoxRef}
                   monitoringDeviceActive={monitoringDeviceActive}
                   livestreamStreaming={livestreamStreaming}
+                  device={device}
+                  setLoadingDevice={setLoadingDevice}
                 />
             </div>
         </div>

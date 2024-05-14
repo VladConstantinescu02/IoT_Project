@@ -20,7 +20,7 @@
     background-color: #eb5e92;
     display: flex;
     align-items: center;
-    border-radius: 10px;
+    border-radius: 5px;
     padding: .5rem 1rem;
 }
 
@@ -39,7 +39,7 @@
     margin-left: 1rem;
     background-color: #272c2b;
     padding: .5rem;
-    color:#eb5e92;
+    color: whitesmoke;
     border-radius: 10px;
     align-items: center;
 }
