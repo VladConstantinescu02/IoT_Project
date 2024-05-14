@@ -57,7 +57,8 @@
 
 .bounding-box {
   position: absolute;
-  border: solid #FF9800 2px;
+  border: dotted #FF9800 5px;
+    z-index: 1000000000;
 }
 
 .player-container-alert {

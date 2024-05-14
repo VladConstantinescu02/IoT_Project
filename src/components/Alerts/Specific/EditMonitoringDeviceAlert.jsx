@@ -50,7 +50,6 @@ const EditMonitoringDeviceAlert = ({ setClose, deviceId, deviceName, babyId, mon
             setClose={setClose}
         > 
             <h2 style={{ fontSize: "1.2em", color: "#272c2b" }}>{`Edit device "${deviceName}"`}</h2>
-            {babyId}
             <FormControl sx={{ width: "90%" }}>
                 <TextField
                     variant="outlined"

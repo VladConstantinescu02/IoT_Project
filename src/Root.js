@@ -5,7 +5,7 @@ import { Outlet } from "react-router-dom";
 function Root() {
 
   return (
-    <div style={{ backgroundColor: "#272c2b" }}>
+    <div style={{ backgroundColor: "#272c2b", height: "100vh" }}>
         <NavigationDrawer />
         <Outlet />
     </div>
