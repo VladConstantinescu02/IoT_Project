@@ -127,6 +127,7 @@ const NavigationDrawer = () => {
                             </ListItemButton>
                     </ListItem>
                     </Link>
+                    <Link style={{ textDecoration: "none", color: "#272c2b" }} to="/babies/">
                     <ListItem disablePadding>
                         <ListItemButton>
                             <ListItemIcon>
@@ -135,6 +136,7 @@ const NavigationDrawer = () => {
                             <ListItemText primary="Your Babies" />
                         </ListItemButton>
                     </ListItem>
+                    </Link>
                     <ListItem disablePadding>
                         <ListItemButton>
                             <ListItemIcon>

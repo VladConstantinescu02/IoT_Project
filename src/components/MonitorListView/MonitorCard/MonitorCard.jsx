@@ -84,7 +84,7 @@ const MonitorCard = ({ monitorId, monitorName, babyName, babyPhotoUrl, setMonito
                 <MoreVertIcon />
             </IconButton>
             }
-            title={<Link style={{ textDecoration: "none", color: "#272c2b" }} to={`/monitor/${monitorId}`}>{monitorName}</Link>}
+            title={<Link style={{ textDecoration: "none", color: "#272c2b", fontWeight: "700" }} to={`/monitor/${monitorId}`}>{monitorName}</Link>}
             subheader={babyName}
         />
         <Menu

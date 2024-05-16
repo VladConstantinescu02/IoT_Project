@@ -5,6 +5,7 @@ import Root from './Root';
 import MonitorListView from './components/MonitorListView/MonitorListView';
 import MonitorView from "./components/MonitorView/MonitorView";
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import BabyListView from "./components/BabyListView/BabyListView";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
       {
         path: "monitors",
         element: <MonitorListView />
+      },
+      {
+        path: "babies",
+        element: <BabyListView />
       }
     ],
   },

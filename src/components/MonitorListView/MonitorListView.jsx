@@ -27,8 +27,9 @@ const MonitorListView = () => {
             }
         }
         if (loading) {
-            request();
-            setLoading(false);
+            request().then(r => {
+                setLoading(false);
+            });
         }
     }, [loading]);
 
