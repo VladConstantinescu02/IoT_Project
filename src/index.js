@@ -6,6 +6,7 @@ import MonitorListView from './components/MonitorListView/MonitorListView';
 import MonitorView from "./components/MonitorView/MonitorView";
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import BabyListView from "./components/BabyListView/BabyListView";
+import LivestreamListView from "./components/LivestreamListView/LivestreamListView";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
       {
         path: "babies",
         element: <BabyListView />
+      },
+      {
+        path: "livestreams",
+        element: <LivestreamListView />
       }
     ],
   },
