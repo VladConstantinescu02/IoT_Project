@@ -137,6 +137,7 @@ const NavigationDrawer = () => {
                         </ListItemButton>
                     </ListItem>
                     </Link>
+                    <Link style={{ textDecoration: "none", color: "#272c2b" }} to={"/livestreams/"}>
                     <ListItem disablePadding>
                         <ListItemButton>
                             <ListItemIcon>
@@ -145,6 +146,7 @@ const NavigationDrawer = () => {
                             <ListItemText primary="Livestream History" />
                         </ListItemButton>
                     </ListItem>
+                    </Link>
                 </List>
                 <Divider />
                 <List style={{ marginTop: "auto" }}>

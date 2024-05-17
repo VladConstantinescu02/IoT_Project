@@ -41,15 +41,16 @@ const BabyListView = () => {
             </div>
             <div className={"baby-list-view"}>
                 {
-                    babies && babies.length &&
+                    babies && babies.length !== 0 &&
                     babies.map((baby, index) => {
                         return (
                             <BabyCard
                                 key={index}
                                 babyId={baby.id}
                                 babyName={baby.name}
-                                babyPhoto={baby.photoUrl}
-                                babyBirthDate={baby.birthdate}
+                                babyPhoto={baby?.photoUrl}
+                                babyBirthDate={baby?.birthdate}
+                                setLoading={setLoading}
                             />
                         )
                     })
@@ -61,6 +62,7 @@ const BabyListView = () => {
                     openAddBabyAlert &&
                     <AddBabyAlert
                         setClose={setOpenAddBabyAlert}
+                        setLoading={setLoading}
                     />
                 }
             </div>

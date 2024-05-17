@@ -8,9 +8,16 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import Menu from "@mui/material/Menu";
 import Moment from "react-moment";
-const BabyCard = ({ babyId, babyName, babyPhoto, babyBirthDate }) => {
+import {useState} from "react";
+import ChoiceAlert from "../../Alerts/Generic/ChoiceAlert";
+import api from "../../../utils/api";
+import AddBabyAlert from "../AddBabyAlert/AddBabyAlert";
+const BabyCard = ({ babyId, babyName, babyPhoto, babyBirthDate, setLoading }) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
+
+    const [openDeleteBabyAlert, setOpenDeleteBabyAlert] = useState(false);
+    const [openEditBabyAlert, setOpenEditBabyAlert] = useState(false);
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -18,6 +25,29 @@ const BabyCard = ({ babyId, babyName, babyPhoto, babyBirthDate }) => {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const handleDeleteBabyAlert = () => {
+        setOpenDeleteBabyAlert(true);
+        setAnchorEl(null);
+    }
+
+    const handleDeleteBaby = async () => {
+        try {
+            const res = await api.delete(`baby/${babyId}`);
+            if (res.status === 200) {
+                console.log(res.data);
+                setOpenDeleteBabyAlert(false);
+                setLoading(true);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const handleEditBabyAlert = () => {
+        setOpenEditBabyAlert(true);
+        setAnchorEl(null);
+    }
 
     return (
         <div className={"baby-card"}>
@@ -65,10 +95,32 @@ const BabyCard = ({ babyId, babyName, babyPhoto, babyBirthDate }) => {
                         'aria-labelledby': 'basic-button',
                     }}
                 >
-                    <MenuItem>Delete <DeleteIcon /></MenuItem>
-                    <MenuItem>Edit<EditIcon /></MenuItem>
+                    <MenuItem onClick={handleDeleteBabyAlert}>Delete <DeleteIcon /></MenuItem>
+                    <MenuItem onClick={handleEditBabyAlert}>Edit<EditIcon /></MenuItem>
                 </Menu>
             </div>
+            {
+                openDeleteBabyAlert &&
+                <ChoiceAlert
+                    setClose={setOpenDeleteBabyAlert}
+                    msg={`Are you sure you want to delete baby "${babyName}"? :(`}
+                    handleYes={handleDeleteBaby}
+                />
+            }
+            {
+                openEditBabyAlert &&
+                <AddBabyAlert
+                    setClose={setOpenEditBabyAlert}
+                    setLoading={setLoading}
+                    isEdit={true}
+                    baby={{
+                        babyId,
+                        babyName,
+                        babyPhoto: `http://localhost:6060/image/${babyPhoto}`,
+                        birthdate: babyBirthDate
+                    }}
+                />
+            }
         </div>
     )
 }
