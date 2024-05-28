@@ -24,6 +24,8 @@ import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import LogoutIcon from '@mui/icons-material/Logout';
 import HistoryIcon from '@mui/icons-material/History';
 import { Link } from 'react-router-dom';
+import api from "../../../utils/api";
+import HomeIcon from '@mui/icons-material/Home';
 
 const drawerWidth = 240;
 
@@ -52,6 +54,18 @@ const DrawerHeader = styled('div')(({ theme }) => ({
     ...theme.mixins.toolbar,
     justifyContent: 'flex-end',
 }));
+
+const handleLogout = async () => {
+    try {
+        const res = await api.get("users/logout");
+        if (res.status === 200) {
+            console.log("Logged out");
+            window.location = "/";
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 const NavigationDrawer = () => {
     const theme = useTheme();
@@ -109,6 +123,17 @@ const NavigationDrawer = () => {
                 </DrawerHeader>
                 <Divider />
                 <List>
+                    <Link style={{ textDecoration: "none", color: "#272c2b" }} to={"/"}>
+                        <ListItem disablePadding>
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <HomeIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Home" />
+                            </ListItemButton>
+                        </ListItem>
+                    </Link>
+                    <Link style={{ textDecoration: "none", color: "#272c2b" }} to="/account/">
                     <ListItem disablePadding>
                         <ListItemButton>
                             <ListItemIcon>
@@ -117,6 +142,7 @@ const NavigationDrawer = () => {
                             <ListItemText primary="Your Account" />
                         </ListItemButton>
                     </ListItem>
+                    </Link>
                     <Link style={{ textDecoration: "none", color: "#272c2b" }} to="/monitors/">
                     <ListItem disablePadding>
                             <ListItemButton>
@@ -151,7 +177,7 @@ const NavigationDrawer = () => {
                 <Divider />
                 <List style={{ marginTop: "auto" }}>
                     <ListItem disablePadding>
-                        <ListItemButton>
+                        <ListItemButton onClick={handleLogout}>
                             <ListItemIcon>
                                 <LogoutIcon />
                             </ListItemIcon>

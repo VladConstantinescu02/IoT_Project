@@ -85,21 +85,30 @@ const MonitorView = () => {
             if (!localStorage.getItem("livestreamStreaming")) localStorage.setItem("livestreamStreaming", "false");
             let webSocket = new WebSocket("ws://localhost:8080");
 
-            webSocket.addEventListener("open", () => {
+            webSocket.addEventListener("open", async () => {
                 console.log("connected to server...");
+                let user = null;
+                try {
+                    const res = await api.get("users/you");
+                    if (res.status === 200) {
+                        user = res.data;
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
 
                 const message = {
                     ClientType: 1,
                     MessageType: 1,
                     Content: {
-                        Email: "a@gmail.com",
-                        Password: "12345678",
-                        UserID: "3604F6D9-48B7-4C16-8347-E0A3BCBD99C1",
+                        Email: user?.email,
+                        Password: user?.password,
+                        UserID: user?.id,
                     }
                 }
                 webSocket.send(JSON.stringify(message));
                 setSocket(webSocket);
-                makeConnectionRequest();
+                makeConnectionRequest(user?.id);
             });
             webSocket.addEventListener("message", (e) => {
                     let msg = JSON.parse(e.data);
@@ -179,11 +188,11 @@ const MonitorView = () => {
         }
     }, []);
 
-    const makeConnectionRequest = async () => {
+    const makeConnectionRequest = async (userId) => {
+        console.log("User: ", userId);
         try {
             const body = {
-                ApiKey: "kdjcnksdjnc",
-                UserID: "3604F6D9-48B7-4C16-8347-E0A3BCBD99C1",
+                UserID: userId.toString()
             }
             const response = await axios.post("http://localhost:8080/check/device", body, {
                 headers: {
