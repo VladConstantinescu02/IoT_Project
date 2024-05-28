@@ -37,7 +37,7 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
   }));
 
-const MonitorViewBottom = ({ temperatureData, emotions, boundingBox, playerRef, boundingBoxRef, monitoringDeviceActive, livestreamStreaming, device, setLoadingDevice }) => {   
+const MonitorViewBottom = ({ temperatureData, emotions, awake, boundingBox, playerRef, boundingBoxRef, monitoringDeviceActive, livestreamStreaming, device, setLoadingDevice }) => {
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -86,6 +86,11 @@ const MonitorViewBottom = ({ temperatureData, emotions, boundingBox, playerRef, 
                                     </h2>
                                 </>
                             }
+                            <h2 style={{ color: "#eb5e92" }}>
+                                {
+                                    awake === null ? "Unknown" : awake ? "Awake" : "Asleep"
+                                }
+                            </h2>
                         </div>
                     </Item>
                     <Item style ={{ marginTop: "1rem", height: "30%", backgroundColor: "transparent", boxShadow: "none" }}>

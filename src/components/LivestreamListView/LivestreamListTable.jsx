@@ -63,7 +63,7 @@ const Row = ({ livestream, handleGetLivestreamStatistics, livestreamStatistics }
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         {
                             livestreamStatistics[livestream?.id] ?
-                                <LivestreamStatistics startedAt={livestream?.dateStarted} livestreamStatistics={livestreamStatistics[livestream?.id]} /> :
+                                <LivestreamStatistics startedAt={livestream?.dateStarted}npm livestreamStatistics={livestreamStatistics[livestream?.id]} /> :
                                 <h2>No statistics to display...</h2>
                         }
                     </Collapse>

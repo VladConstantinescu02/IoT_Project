@@ -7,11 +7,6 @@ import Alert from "../Alerts/Alert";
 import NoStrollerIcon from '@mui/icons-material/NoStroller';
 import StrollerIcon from '@mui/icons-material/Stroller';
 import TemperatureData from "./MonitorViewBottom/TemperatureData/TemperatureData";
-import videojs, { VideoJsPlayer } from "video.js";
-import {
-    registerIVSQualityPlugin,
-    VideoJSQualityPlugin,
-} from "amazon-ivs-player";
 import { useParams } from "react-router-dom";
 import api from "../../utils/api";
 
@@ -47,6 +42,7 @@ const MonitorView = () => {
     const boundingBoxRef = useRef(null);
 
     const [emotions, setEmotions] = useState([]);
+    const [awake, setAwake] = useState(null);
 
     const [device, setDevice] = useState({});
 
@@ -58,12 +54,12 @@ const MonitorView = () => {
     const [socket, setSocket] = useState(null);
 
     useEffect(() => {
-      const getDeviceData = async () => {
+      const getDeviceData = async (callback) => {
         try {
           const res = await api.get( `device/${id}`);
           if (res.status === 200) {
             setDevice(res.data);
-            console.log(device)
+            callback(res.data);
           }
         } catch (error) {
           console.log(error);
@@ -71,7 +67,9 @@ const MonitorView = () => {
       }
       try {
           if (loadingDevice) {
-              getDeviceData().then(r => console.log("loaded device..."));
+              getDeviceData(async (device) => {
+                  handleWebSocketCommunication(device.id);
+              }).then(r => console.log("device loaded..."));
               setLoadingDevice(false);
           }
       } catch (error) {
@@ -79,32 +77,31 @@ const MonitorView = () => {
       }
     }, [loadingDevice])
 
-    
-    useEffect(() => {
+    const handleWebSocketCommunication = (deviceId) => {
         try {
             if (!localStorage.getItem("livestreamStreaming")) localStorage.setItem("livestreamStreaming", "false");
             let webSocket = new WebSocket("ws://localhost:8080");
 
-            webSocket.addEventListener("open", () => {
+            webSocket.addEventListener("open", async () => {
                 console.log("connected to server...");
-
                 const message = {
                     ClientType: 1,
                     MessageType: 1,
                     Content: {
                         Email: "a@gmail.com",
                         Password: "12345678",
-                        UserID: "3604F6D9-48B7-4C16-8347-E0A3BCBD99C1",
+                        UserID: "3604f6d9-48b7-4c16-8347-e0a3bcbd99c1",
                     }
                 }
-                webSocket.send(JSON.stringify(message));
+                await webSocket.send(JSON.stringify(message));
+                await makeConnectionRequest(deviceId);
                 setSocket(webSocket);
-                makeConnectionRequest();
-            });
+            })
             webSocket.addEventListener("message", (e) => {
                     let msg = JSON.parse(e.data);
 
                     if (msg.MessageType === 6){
+                        console.log(msg);
                         if (msg.Type === 0) {
                             setShowMonitorStateAlert(true);
                             setMonitoringDeviceActive(true);
@@ -142,12 +139,12 @@ const MonitorView = () => {
                         if (playerRef && playerRef.current) {
                             if (msg.Content?.Emotions) {
                                 setEmotions(msg.Content.Emotions);
+                                setAwake(msg.Content.Awake);
                                 if (msg.Content?.BoundingBox) {
                                     let left = msg.Content?.BoundingBox[0];
                                     let top = msg.Content?.BoundingBox[1];
                                     let width = msg.Content?.BoundingBox[2];
                                     let height = msg.Content?.BoundingBox[3];
-                                    console.log("da");
 
                                     let playerWidth = playerRef.current.clientWidth;
                                     let playerHeight = playerRef.current.clientHeight;
@@ -177,13 +174,13 @@ const MonitorView = () => {
         } catch (error) {
             console.log(error);
         }
-    }, []);
+    }
 
-    const makeConnectionRequest = async () => {
+    const makeConnectionRequest = async (id) => {
         try {
             const body = {
-                ApiKey: "kdjcnksdjnc",
-                UserID: "3604F6D9-48B7-4C16-8347-E0A3BCBD99C1",
+                UserId: "3604f6d9-48b7-4c16-8347-e0a3bcbd99c1",
+                DeviceId: id
             }
             const response = await axios.post("http://localhost:8080/check/device", body, {
                 headers: {
@@ -234,6 +231,7 @@ const MonitorView = () => {
                 <MonitorViewBottom
                   temperatureData={temperatureData}
                   emotions={emotions}
+                  awake={awake}
                   boundingBox={boundingBox}
                   playerRef={playerRef}
                   boundingBoxRef={boundingBoxRef}
