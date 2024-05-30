@@ -1,20 +1,25 @@
 import "./MonitorView.css";
 import React, { useEffect, useState, useRef } from "react";
 import MonitorViewTop from "./MonitorViewTop/MonitorViewTop";
-import MonitorViewBottom from "./MonitorViewBottom/MonitorViewBottom"; 
+import MonitorViewBottom from "./MonitorViewBottom/MonitorViewBottom";
 import axios from "axios";
 import Alert from "../Alerts/Alert";
 import NoStrollerIcon from '@mui/icons-material/NoStroller';
 import StrollerIcon from '@mui/icons-material/Stroller';
 import TemperatureData from "./MonitorViewBottom/TemperatureData/TemperatureData";
+import videojs, { VideoJsPlayer } from "video.js";
+import {
+    registerIVSQualityPlugin,
+    VideoJSQualityPlugin,
+} from "amazon-ivs-player";
 import { useParams } from "react-router-dom";
 import api from "../../utils/api";
 
 const initialBoundingBoxState = {
-  Left: 0,
-  Top: 0,
-  Width: 0,
-  Height: 0
+    Left: 0,
+    Top: 0,
+    Width: 0,
+    Height: 0
 }
 
 const MonitorView = () => {
@@ -23,15 +28,15 @@ const MonitorView = () => {
 
     const [showMonitorStateAlert, setShowMonitorStateAlert] = useState(false);
 
-    const [systemData, setSystemData] = useState({  
-      systemTemperature: 0,
-      wifiName: "no_wifi"
+    const [systemData, setSystemData] = useState({
+        systemTemperature: 0,
+        wifiName: "no_wifi"
     });
 
     const [temperatureData, setTemperatureData] = useState({
-      temperatureC: 0,
-      temperatureF: 0,
-      humidity: 0
+        temperatureC: 0,
+        temperatureF: 0,
+        humidity: 0
     });
 
     const [boundingBox, setBoundingBox] = useState(initialBoundingBoxState);
@@ -54,54 +59,62 @@ const MonitorView = () => {
     const [socket, setSocket] = useState(null);
 
     useEffect(() => {
-      const getDeviceData = async (callback) => {
-        try {
-          const res = await api.get( `device/${id}`);
-          if (res.status === 200) {
-            setDevice(res.data);
-            callback(res.data);
-          }
-        } catch (error) {
-          console.log(error);
+        const getDeviceData = async () => {
+            try {
+                const res = await api.get( `device/${id}`);
+                if (res.status === 200) {
+                    setDevice(res.data);
+                    console.log(device)
+                }
+            } catch (error) {
+                console.log(error);
+            }
         }
-      }
-      try {
-          if (loadingDevice) {
-              getDeviceData(async (device) => {
-                  handleWebSocketCommunication(device.id);
-              }).then(r => console.log("device loaded..."));
-              setLoadingDevice(false);
-          }
-      } catch (error) {
-          console.log(error);
-      }
+        try {
+            if (loadingDevice) {
+                getDeviceData().then(r => console.log("loaded device..."));
+                setLoadingDevice(false);
+            }
+        } catch (error) {
+            console.log(error);
+        }
     }, [loadingDevice])
 
-    const handleWebSocketCommunication = (deviceId) => {
+
+    useEffect(() => {
         try {
             if (!localStorage.getItem("livestreamStreaming")) localStorage.setItem("livestreamStreaming", "false");
             let webSocket = new WebSocket("ws://localhost:8080");
 
             webSocket.addEventListener("open", async () => {
                 console.log("connected to server...");
+                let user = null;
+                try {
+                    const res = await api.get("users/you");
+                    if (res.status === 200) {
+                        user = res.data;
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+
                 const message = {
                     ClientType: 1,
                     MessageType: 1,
                     Content: {
-                        Email: "a@gmail.com",
-                        Password: "12345678",
-                        UserID: "3604f6d9-48b7-4c16-8347-e0a3bcbd99c1",
+                        Email: user?.email,
+                        Password: user?.password,
+                        UserID: user?.id,
                     }
                 }
-                await webSocket.send(JSON.stringify(message));
-                await makeConnectionRequest(deviceId);
+                webSocket.send(JSON.stringify(message));
                 setSocket(webSocket);
-            })
+                await makeConnectionRequest(user?.id);
+            });
             webSocket.addEventListener("message", (e) => {
                     let msg = JSON.parse(e.data);
 
                     if (msg.MessageType === 6){
-                        console.log(msg);
                         if (msg.Type === 0) {
                             setShowMonitorStateAlert(true);
                             setMonitoringDeviceActive(true);
@@ -145,6 +158,7 @@ const MonitorView = () => {
                                     let top = msg.Content?.BoundingBox[1];
                                     let width = msg.Content?.BoundingBox[2];
                                     let height = msg.Content?.BoundingBox[3];
+                                    console.log("da");
 
                                     let playerWidth = playerRef.current.clientWidth;
                                     let playerHeight = playerRef.current.clientHeight;
@@ -174,13 +188,13 @@ const MonitorView = () => {
         } catch (error) {
             console.log(error);
         }
-    }
+    }, []);
 
-    const makeConnectionRequest = async (id) => {
+    const makeConnectionRequest = async (userId) => {
+        console.log("User: ", userId);
         try {
             const body = {
-                UserId: "3604f6d9-48b7-4c16-8347-e0a3bcbd99c1",
-                DeviceId: id
+                UserID: userId.toString()
             }
             const response = await axios.post("http://localhost:8080/check/device", body, {
                 headers: {
@@ -200,45 +214,45 @@ const MonitorView = () => {
             console.log("Error:", error);
         }
     }
-    
-    return device && (    
+
+    return device && (
         <div className="monitor-view">
             {
-                showMonitorStateAlert && 
+                showMonitorStateAlert &&
                 <Alert
                     Type={monitoringDeviceActive ? "success" : "error"}
                     msg={monitoringDeviceActive ? "Monitoring device back online" : "Monitoring device disconnected"}
                     setClose={setShowMonitorStateAlert}
                     monitoringDeviceActive={monitoringDeviceActive}
                 >
-                  {
-                    monitoringDeviceActive ?
-                    <StrollerIcon  style={{fontSize: "3em"}}/> :
-                    <NoStrollerIcon  style={{fontSize: "3em"}}/>
-                  }
-                  </ Alert>
+                    {
+                        monitoringDeviceActive ?
+                            <StrollerIcon  style={{fontSize: "3em"}}/> :
+                            <NoStrollerIcon  style={{fontSize: "3em"}}/>
+                    }
+                </ Alert>
             }
             <div style={{ padding: "1rem 1rem .5rem 1rem " }}>
                 <MonitorViewTop
-                    systemData = {systemData}  
-                    monitoringDeviceActive = {monitoringDeviceActive} 
+                    systemData = {systemData}
+                    monitoringDeviceActive = {monitoringDeviceActive}
                     deviceName={device.name}
                     socket={socket}
                     deviceId={device?.id}
-                />  
+                />
             </div>
             <div style={{ width: "100%", height: "88%", padding: "1rem"}}>
                 <MonitorViewBottom
-                  temperatureData={temperatureData}
-                  emotions={emotions}
-                  awake={awake}
-                  boundingBox={boundingBox}
-                  playerRef={playerRef}
-                  boundingBoxRef={boundingBoxRef}
-                  monitoringDeviceActive={monitoringDeviceActive}
-                  livestreamStreaming={livestreamStreaming}
-                  device={device}
-                  setLoadingDevice={setLoadingDevice}
+                    temperatureData={temperatureData}
+                    emotions={emotions}
+                    boundingBox={boundingBox}
+                    playerRef={playerRef}
+                    boundingBoxRef={boundingBoxRef}
+                    monitoringDeviceActive={monitoringDeviceActive}
+                    livestreamStreaming={livestreamStreaming}
+                    device={device}
+                    setLoadingDevice={setLoadingDevice}
+                    awake={awake}
                 />
             </div>
         </div>
